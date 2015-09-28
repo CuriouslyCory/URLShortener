@@ -1,0 +1,18 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800,400italic|Droid+Serif:400,400italic,700);
+
+// Colors
+$cPrimary: #47a2de;
+$cAccent: #a9d9ea;
+$cAccent2: #fff472;
+$cdGray: #404040;
+$cBody: #1f1f1f;
+
+// Type
+$tSans: 'Open Sans', sans-serif;
+$tSerif: 'Droid Serif', serif;
+
+// Styles
+body {
+	font: normal 16px/26px $tSans;
+	color: $cBody;
+}
