@@ -1,11 +1,11 @@
 # URLShortener
 Easy URL shortener
 
-# Prerequisites 
+## Prerequisites 
 You'll need a machine or virtual machine capable of runnign docker. If you're running on a windows environment I suggest booting up a coreos virtual machine using vagrant.
 https://coreos.com/os/docs/latest/booting-on-vagrant.html
 
-# Installation
+## Installation
 Clone this git repository and build the docker containers
 ```
 $ git clone https://github.com/HexKrak/URLShortener.git
@@ -24,7 +24,7 @@ $ docker run --name shorten-api -v ../shorten-api:/usr/share/nginx/html --link s
 $ docker run --name shorten-app -v ../shorten-app:/usr/share/nginx/html -i -t -p 8080:80 shorten-app
 ```
 
-# How this project came together
+## How this project came together
 First, I created a docker stragegy that will run the app and the api and a database all on individual docks. The api container gets NginX installed with zend framework. The app will run NginX without any extras.
 I'll use a prebuilt mariadb database container for my database, and import the table structure during container build time.
 
