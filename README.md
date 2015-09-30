@@ -2,8 +2,7 @@
 Easy URL shortener
 
 ## Prerequisites 
-You'll need a machine or virtual machine capable of runnign docker. If you're running on a windows environment I suggest booting up a coreos virtual machine using vagrant.
-https://coreos.com/os/docs/latest/booting-on-vagrant.html
+You'll need a machine or virtual machine capable of running docker. If you're running on a windows environment I suggest booting up a [coreos virtual machine using vagrant.][https://coreos.com/os/docs/latest/booting-on-vagrant.html]
 
 ## Installation
 Clone this git repository and build the docker containers
@@ -19,9 +18,9 @@ Run the container instances
 #first a mariadb instance	
 $ docker run --name shorten-db -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mariadb:latest
 #second spin up the api with a public port of 8081 and link it to the mariadb instance
-$ docker run --name shorten-api -v ../shorten-api:/usr/share/nginx/html --link shorten-db:mysql -p 8081:80 -d shorten-api
+$ docker run --name shorten-api -v /var/www/URLShortener/shorten-api/api:/usr/share/nginx/html --link shorten-db:mysql -p 8081:80 -d shorten-api
 #second spin up the app with a public port of 8080
-$ docker run --name shorten-app -v /var/www/URLShortener/shorten-app/app:/usr/share/nginx/html -i -t -p 8080:80 shorten-app
+$ docker run --name shorten-app -v /var/www/URLShortener/shorten-app/app:/usr/share/nginx/html -p 8080:80 -i -t -d shorten-app
 ```
 
 ## How this project came together
@@ -40,3 +39,6 @@ Next I started configuring Gruntfile.js adding build and watcher instructions. J
 
 With grunt properly configured I put together my angular core, main controller, and main service, and added them to my index. I configured the list display and add url methods with dummy data, and now it's time to work on the api.
 
+I set up a docker file with the nginx base to install and configure php in a way that is compatable with zend. I cloned the top level of zf1 into my api directory and used the zf command to create a project scaffold. I then included the relative path to the library in the index.php file. Then I added all the appropriate abstract functions to the class and added some dummy data. At this point I realize a full database server is probably unneccesary, and I could use memcache or mongoDB instead.
+
+Now that zend framework is returning dummy data, I'll replace the dummy data in the front end with content provided by the api. To do this I'll add api interfaces in the main.service and call those from the controller.

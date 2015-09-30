@@ -10,20 +10,27 @@
 	    var vm = this;
 	    
 	    //variables
-	    vm.urls = [
-           {longURL: 'http://www.google.com', shortURL: 'http://hua.me/blarg'},
-           {longURL: 'http://www.yahoo.com', shortURL: 'http://hua.me/blurg'},
-           {longURL: 'http://www.bing.com', shortURL: 'http://hua.me/blerg'}
-        ];
+	    vm.urls = [];
 	    vm.currentURL = '';
 	    	
 	    //functions
 	    vm.getShortURL = getShortURL;
+	    vm.getURLs = getURLs;
 	    
 	    activate();
 	    
 	    function activate() {
-
+	    	return getURLs().then(function(){
+	    		//console.log("Activated Nav");
+	    	});
+	    }
+	    
+	    function getURLs(){
+	    	return UrlService.getURLs().then(function(data){
+	    		console.log(data);
+	    		vm.urls = data;
+	    		return vm.urls;
+	    	});
 	    }
 	    
 	    function getShortURL(){
