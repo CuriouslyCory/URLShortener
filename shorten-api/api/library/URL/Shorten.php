@@ -50,27 +50,31 @@ class Shorten {
 	 * @param  string $url
 	 * @return ShortURL
 	 */
-	public static function get($db, $url){
-		//strip hash from url
-		$urlParts = parse_url($url);
-		$pathParts = explode("/",  $urlParts['path']);
-		
-		$path = array_pop($pathParts);
+	public static function get($db, $hash){
+
 		
 		//convert the hash back into the pk
-		$urlID = self::getIDFromHash($path);
+		$urlID = self::getIDFromHash($hash);
 		
 		$sql = "SELECT * FROM Shorten.URLs WHERE iURLID = '$urlID'";
 		$oStmt = $db->query($sql);
-		$aError = $db->errorInfo();
 		
-		if($aError && count($aError) > 0){
+		if(!$oStmt){
+			$aError = $db->errorInfo();
 			print_r($aError);
 			return false;
 		}else{
 			$aResult = $oStmt->fetchAll();
-			return($aResult[0]);
+			if($aResult && count($aResult) > 0){
+				foreach($aResult as $aRow){
+					$aResults[] = array(
+							'longURL' => $aRow['mLongURL'],
+							'shortURL' => self::getHashFromID($aRow['iURLID'])
+					);
+				}
+			}
 		}
+		return($aResults);
 	}
 	
 	public static function getList($db){

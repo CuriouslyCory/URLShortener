@@ -21,11 +21,11 @@ class IndexController extends Zend_Rest_Controller {
     	exit();
     }
     
-    //Get specific item
+    //Get long URL from hash
     public function getAction() {
-		//Not in use
-    	echo "GetAction";
-    	exit();
+    	$cHash = $this->_request->getParam('id');
+    	$aURL = URL\Shorten::get($this->db, $cHash);
+    	$this->_helper->json($aURL);
     }
     
     //Create new shortened url

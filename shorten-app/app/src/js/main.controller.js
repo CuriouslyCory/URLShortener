@@ -27,7 +27,7 @@
 	    
 	    function getURLs(){
 	    	return UrlService.getURLs().then(function(data){
-	    		console.log(data);
+//	    		console.log(data);
 	    		vm.urls = data;
 	    		return vm.urls;
 	    	});

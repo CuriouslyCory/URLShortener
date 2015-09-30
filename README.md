@@ -39,6 +39,9 @@ Next I started configuring Gruntfile.js adding build and watcher instructions. J
 
 With grunt properly configured I put together my angular core, main controller, and main service, and added them to my index. I configured the list display and add url methods with dummy data, and now it's time to work on the api.
 
-I set up a docker file with the nginx base to install and configure php in a way that is compatable with zend. I cloned the top level of zf1 into my api directory and used the zf command to create a project scaffold. I then included the relative path to the library in the index.php file. Then I added all the appropriate abstract functions to the class and added some dummy data. At this point I realize a full database server is probably unneccesary, and I could use memcache or mongoDB instead.
+I set up a docker file with the nginx base to install and configure php in a way that is compatable with zend. I cloned the top level of zf1 into my api directory and used the zf command to create a project scaffold. I then included the relative path to the library in the index.php file. Then I added all the appropriate abstract functions to the class and added some dummy data. At this point I realize a full database server is probably unneccesary, and I could use memcache or mongoDB instead, but for the purpose of the demo I'll continue with a mariaDB/mysql server.
 
 Now that zend framework is returning dummy data, I'll replace the dummy data in the front end with content provided by the api. To do this I'll add api interfaces in the main.service and call those from the controller.
+
+Next get the database set up and configure all the input and output, and link it up to the API. After that's done, and the page is populating with live data I need to configure the redirect portion.
+

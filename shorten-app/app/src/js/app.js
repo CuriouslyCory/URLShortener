@@ -1,3 +1,4 @@
 (function(){
-	angular.module('urlShortener', []);
+	angular
+		.module('urlShortener', ['ngRoute']);
 })();
