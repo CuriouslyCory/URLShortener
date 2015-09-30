@@ -1,0 +1,8 @@
+<div>
+	<div class="input-wrapper">
+		<input type="text" placeholder="Url to shorten..." ng-model="vm.currentURL"> <button ng-click="vm.getShortURL();">convert</button>
+	</div>
+	<div class="existing-urls" ng-repeat="url in vm.urls">
+		<a href="/r/{{url.shortURL}}">{{url.longURL}}</a> | <a href="/r/{{url.shortURL}}">{{url.shortURL}}</a>
+	</div>
+</div>

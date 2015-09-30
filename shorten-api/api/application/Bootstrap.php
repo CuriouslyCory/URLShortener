@@ -24,7 +24,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 	}
 	
 	protected function _initDB(){
-		$db = new PDO('mysql:host=shorten-db;', 'root', 'my-secret-pw');
+		$db = new PDO('mysql:host=shorten-db;', 'root', $_SERVER['MYSQL_ENV_MYSQL_ROOT_PASSWORD']);
 		Zend_Registry::set('db', $db);
 	}
 

@@ -11,12 +11,13 @@ $ git clone https://github.com/HexKrak/URLShortener.git
 $ cd URLShortener
 $ docker build -t shorten-app ./shorten-app
 $ docker build -t shorten-api ./shorten-api
+$ docker build -t shorten-db ./shorten-db
 ```
 
 Run the container instances
 ```
-#first a mariadb instance	
-$ docker run --name shorten-db -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mariadb:latest
+#first a mariadb instance, add "-p 3306:3306" if you need to access the database via an external tool.
+$ docker run --name shorten-db -v /var/www/URLShortener/shorten-db/docker-resource/:/var/lib/mysql/Shorten/ -e MYSQL_ROOT_PASSWORD=my-secret-pw -d shorten-db
 #second spin up the api with a public port of 8081 and link it to the mariadb instance
 $ docker run --name shorten-api -v /var/www/URLShortener/shorten-api/api:/usr/share/nginx/html --link shorten-db:mysql -p 8081:80 -d shorten-api
 #second spin up the app with a public port of 8080
@@ -45,3 +46,6 @@ Now that zend framework is returning dummy data, I'll replace the dummy data in 
 
 Next get the database set up and configure all the input and output, and link it up to the API. After that's done, and the page is populating with live data I need to configure the redirect portion.
 
+TODO:
+Fix stack size error that occures when adding a url, following the redirect then pressing back until back to the index.
+Add database structure to mariadb initialization.
