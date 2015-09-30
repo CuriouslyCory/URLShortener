@@ -9,43 +9,60 @@ class IndexController extends Zend_Rest_Controller {
         $this->db = Zend_Registry::get('db');
     }
     
-    //Get url list
+    //Get list of shortened urls from database
     public function indexAction(){
     	$aList = URL\Shorten::getList($this->db);
-    	$this->getResponse()->setBody(Zend_Json::encode($aList));
-    	$this->getResponse()->setHttpResponseCode(200);
+    	$this->_helper->json($aList);
     }
 
     //This has to be here per the abstract method this class extends
     public function headAction(){
-    	
+    	echo "HeadAction";
+    	exit();
     }
     
     //Get specific item
     public function getAction() {
 		//Not in use
+    	echo "GetAction";
+    	exit();
     }
     
     //Create new shortened url
     public function postAction() {
-    	$json = array();
-    	$cURL = $this->_request->getParam('url');
+    	$cURL = $this->getRawParam('url');
     	$aList = URL\Shorten::create($this->db, $cURL);
-    	
+    	//201 code is standard for "created"
     	$this->getResponse()->setHttpResponseCode(201);
-    	$this->getResponse()->setBody(Zend_Json::encode($json));
+    	$this->_helper->json($aList);
     }
     
     //This is where I'd put url update logic.. IF I HAD ANY!!!
     public function putAction(){
-    	
+    	echo "put action";
+    	exit();
     }
     
     //remove url from session
     public function deleteAction() {
-    	$json = array();
-    	$json['succes'] = true;
-    	echo Zend::Json_Encode($json);
+    	//TODO: Add delete function
+    	echo "DeleteAction";
+    	exit();
+    }
+    
+    //Angular's default post uses json encoded parameters instead of a normal request object. 
+    //decode the paramters and return
+    private function getRawParams() {
+    	$cRawBody = $this->_request->getRawBody();
+    	$aData = Zend_Json::decode($cRawBody);
+    	return $aData;
+    }
+    
+    //decode and return an individual parameter
+    private function getRawParam($key) {
+    	$cRawBody = $this->_request->getRawBody();
+    	$aData = Zend_Json::decode($cRawBody);
+    	return $aData[$key];
     }
 }
 

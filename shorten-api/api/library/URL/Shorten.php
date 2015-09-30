@@ -23,24 +23,23 @@ class Shorten {
 		$sql = "INSERT INTO Shorten.URLs
 				SET mLongURL = '$cUrl',
 				cHash = '$cHash'";
-		$oStmt = $db->query($sql);
+		$iCount = $db->exec($sql);
 		$aError = $db->errorInfo();
 		
-		if($aError && count($aError) > 0){
+		if($iCount == 0 && $aError && count($aError) > 0){
 			if($aError[0] = 23000){
 				$sql = "SELECT iURLID FROM Shorten.URLs
 						WHERE cHash = '$cHash'";
-				$oStmt = $this->query($sql);
+				$oStmt = $db->query($sql);
 				$aResult = $oStmt->fetchAll();
 			
 				$iURLID = $aResult[0]['iURLID'];
 			}
 		}else{
-			$aResult = $oStmt->fetchAll();
 			$iURLID = $db->lastInsertID();
 		}
 		
-		$aURL = array('shortURL'=> self::getHashFromID($iURLID), 'longURL' => $cURL);
+		$aURL = array('shortURL'=> self::getHashFromID($iURLID), 'longURL' => $cUrl);
 		//calculate a hash based on the ID and return
 		return($aURL);
 	}
@@ -89,8 +88,8 @@ class Shorten {
 			if($aResult && count($aResult) > 0){
 				foreach($aResult as $aRow){
 					$aResults[] = array(
-						'longURL' => $aRow['cLongURL'],
-						'shortURL' => $this->getHashID($aRow['iURLID'])
+						'longURL' => $aRow['mLongURL'],
+						'shortURL' => self::getHashFromID($aRow['iURLID'])
 					);
 				}
 			}
@@ -99,6 +98,7 @@ class Shorten {
 	}
 	
 	public static function getHashFromID($id){
+		$hash = '';
 		$base = strlen(self::$CharMap);
 		
 		if($id == 0){

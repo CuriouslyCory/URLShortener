@@ -8,7 +8,7 @@
 		var service = {
 			getURLs: getURLs,
 			getShortURL : getShortURL,
-			apiPath: "http://" + window.location.hostname + ":8081"
+			apiPath: "http://" + window.location.hostname + ":8081/index"
 		};
 		
 		return service;
@@ -28,12 +28,12 @@
 		}
 			
 		function getShortURL(currentURL){
-			return $http.post(service.apiPath, {'url': currentURL})
+			return $http.post(service.apiPath + "", {'url': currentURL})
 				.then(getShortURLComplete)
 				.catch(getShortURLFailed);
 			
 			function getShortURLComplete(response){
-				return response;
+				return response.data;
 			}
 			
 			function getShortURLFailed(error){
