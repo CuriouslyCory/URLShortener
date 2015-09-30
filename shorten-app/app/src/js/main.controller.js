@@ -34,8 +34,10 @@
 	    }
 	    
 	    function getShortURL(){
-	    	var newURL = {longURL:vm.currentURL, shortURL: 'http://hua.me/test'};
-	    	vm.urls.push(newURL);
+	    	UrlService.getShortURL(vm.currentURL).then(function(data){
+	    		var newURL = {longURL:data.longURL, shortURL: data.shortURL};
+		    	vm.urls.push(newURL);
+	    	});
 	    }	    
 	}
 })();

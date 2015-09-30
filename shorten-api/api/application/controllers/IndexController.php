@@ -11,8 +11,8 @@ class IndexController extends Zend_Rest_Controller {
     
     //Get url list
     public function indexAction(){
-    	$jList = URL\Storage::getList($this->db);
-    	$this->getResponse()->setBody($jList);
+    	$aList = URL\Shorten::getList($this->db);
+    	$this->getResponse()->setBody(Zend_Json::encode($aList));
     	$this->getResponse()->setHttpResponseCode(200);
     }
 
@@ -29,16 +29,11 @@ class IndexController extends Zend_Rest_Controller {
     //Create new shortened url
     public function postAction() {
     	$json = array();
-    	//check session to see if the url has already been minified
-    	if($oSession->URLs[$this->_request->getParam('url')]){
-    		$json[] = array(
-    			'shortURL' => $oSession->URLs[$this->_request->getParam('url')],
-    			'longURL' => $this->_request->getParam('url')
-    		);
-    	}
-    	$json[] = array('shortURL'=> 'http://hua.me/short', 'longURL'=>'http://example.com/some/long/url');
+    	$cURL = $this->_request->getParam('url');
+    	$aList = URL\Shorten::create($this->db, $cURL);
+    	
     	$this->getResponse()->setHttpResponseCode(201);
-    	$this->getResponse()->setBody(Zend_Json::Encode($json));
+    	$this->getResponse()->setBody(Zend_Json::encode($json));
     }
     
     //This is where I'd put url update logic.. IF I HAD ANY!!!

@@ -17,27 +17,32 @@ class Shorten {
      * @param  string $url
      * @return ShortURL
      */
-	public static function create($db, $cUrl, $iContactID = 0, $cCustID = '', $cStatType = ''){
+	public static function create($db, $cUrl){
 		//create a record with just the long url to reserve the record
+		$cHash = hash('sha256', $cUrl);
 		$sql = "INSERT INTO Shorten.URLs
-				SET cLongURL = '$cUrl',
-					iContactID = '$iContactID',
-					cCustID = '$cCustID',
-					cStatType = '$cStatType'";
-		$db->Execute($sql);
+				SET mLongURL = '$cUrl',
+				cHash = '$cHash'";
+		$oStmt = $db->query($sql);
 		$aError = $db->errorInfo();
 		
-		if($aError[0] = 23000){
-			$sql = "SELECT iURLID FROM Shorten.URLs WHERE cLongURL = '$cUrl' AND iContactID = '$iContactID'";
-			$tmp = $db->exec_sql($sql);
-			$iURLID = $tmp[0]['iURLID'];
+		if($aError && count($aError) > 0){
+			if($aError[0] = 23000){
+				$sql = "SELECT iURLID FROM Shorten.URLs
+						WHERE cHash = '$cHash'";
+				$oStmt = $this->query($sql);
+				$aResult = $oStmt->fetchAll();
+			
+				$iURLID = $aResult[0]['iURLID'];
+			}
 		}else{
-			//grab the insert ID, we'll be creating the hash based on this
+			$aResult = $oStmt->fetchAll();
 			$iURLID = $db->lastInsertID();
 		}
 		
+		$aURL = array('shortURL'=> self::getHashFromID($iURLID), 'longURL' => $cURL);
 		//calculate a hash based on the ID and return
-		return("http://".(ISDEV ? "dev." : "")."hwy.to/".self::getHashFromID($iURLID));
+		return($aURL);
 	}
 	
 	/**
@@ -57,20 +62,40 @@ class Shorten {
 		$urlID = self::getIDFromHash($path);
 		
 		$sql = "SELECT * FROM Shorten.URLs WHERE iURLID = '$urlID'";
-		$tmp = $db->exec_sql($sql);
+		$oStmt = $db->query($sql);
+		$aError = $db->errorInfo();
 		
-		//check and see if we need to insert contact stats or not.
-		if($tmp[0]['iContactID']){
-			$stats = new \ContactStats($db);
-			$statID = $stats->record($tmp[0]['cStatType'],
-					array(
-						'iContactID' => $iContactID,
-						'mExtra'       => $tmp[0]['cLongURL']
-					)
-			);
+		if($aError && count($aError) > 0){
+			print_r($aError);
+			return false;
+		}else{
+			$aResult = $oStmt->fetchAll();
+			return($aResult[0]);
 		}
+	}
+	
+	public static function getList($db){
+		$aResults = array();
 		
-		return($tmp[0]['cLongURL']);
+		$sql = "SELECT * FROM Shorten.URLs ORDER BY iURLID DESC LIMIT 100";
+		$oStmt = $db->query($sql);
+		
+		if(!$oStmt){
+			$aError = $db->errorInfo();
+			print_r($aError);
+			return false;
+		}else{
+			$aResult = $oStmt->fetchAll();
+			if($aResult && count($aResult) > 0){
+				foreach($aResult as $aRow){
+					$aResults[] = array(
+						'longURL' => $aRow['cLongURL'],
+						'shortURL' => $this->getHashID($aRow['iURLID'])
+					);
+				}
+			}
+		}
+		return($aResults);
 	}
 	
 	public static function getHashFromID($id){

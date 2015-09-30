@@ -28,7 +28,7 @@
 		}
 			
 		function getShortURL(currentURL){
-			return $http.post(apiPath, {'url': currentURL})
+			return $http.post(service.apiPath, {'url': currentURL})
 				.then(getShortURLComplete)
 				.catch(getShortURLFailed);
 			
